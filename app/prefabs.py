@@ -1,4 +1,4 @@
-from app.core import Hero
+from app.hero import Hero
 
 
 class Warrior(Hero):
