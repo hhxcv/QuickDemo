@@ -1,3 +1,5 @@
+from seek import SeekFirstEnemy
+
 
 class ActiveSkill(object):
 
@@ -5,6 +7,7 @@ class ActiveSkill(object):
         self.name = ""
         self.description = ""
         self.priority = 0
+        self.seek_targets_strategy = SeekFirstEnemy()
 
     def get_priority(self):
         return self.priority
@@ -15,6 +18,9 @@ class ActiveSkill(object):
     def get_description(self):
         return self.description
 
+    def seek_targets(self, hero, battle_ground):
+        return self.seek_targets_strategy.seek_targets(hero, battle_ground)
+
     def check_condition(self, hero, battle_ground):
         """
         check the condition of whether the skill can be casted
@@ -24,6 +30,15 @@ class ActiveSkill(object):
         """
         pass
 
+    def on_before_cast(self, hero, target_list):
+        pass
+
+    def on_after_cast(self, hero, target_list):
+        pass
+
+    def on_cast(self, hero, target_list):
+        pass
+
     def cast(self, hero, battle_ground):
         """
         cast the skill to targets
@@ -31,6 +46,10 @@ class ActiveSkill(object):
         :param battle_ground: the current battle_ground
         :return: the result
         """
+        target_list = self.seek_targets(hero, battle_ground)
+        self.on_before_cast(hero, target_list)
+        self.on_cast(hero, target_list)
+        self.on_after_cast(hero, target_list)
         pass
 
 
@@ -47,24 +66,29 @@ class BasicAttack(ActiveSkill):
             return True
         return False
 
-    def cast(self, hero, battle_ground):
-        target_list = self.seek_targets(hero, battle_ground)
-        self.attack(hero, target_list)
+    def on_before_cast(self, hero, target):
+        pass
 
-    def seek_targets(self, hero, battle_ground):
-        enemy_list, ally_list = battle_ground.get_enemies_and_allies(hero.get_player())
-        target_list = []
-        for enemy in enemy_list:
-            if not enemy.is_dead:
-                target_list.append(enemy)
-                return target_list
-        return None
+    def on_after_cast(self, hero, target):
+        pass
 
-    def attack(self, hero, target_list):
+    def on_cast(self, hero, target_list):
         if target_list is None:
             return
         for target in target_list:
-            target.take_damage(hero, self, hero.get_atk())
-            hero.print_action_log("basic attack %s of %s at %d, damage:%d, target hp remains:%d"
+            damage = hero.get_atk()
+            self.on_before_cast(hero, target)
+            final_damage = target.take_damage(hero, self, damage)
+            self.on_after_cast(hero, target)
+            hero.print_action_log("basic attack %s of %s at %d, final damage:%d, target hp remains:%d"
                                   % (target.get_name(), target.get_player().get_name(), target.get_position(),
-                                     hero.get_atk(), target.get_hp()))
+                                     final_damage, target.get_hp()))
+
+
+class AngerBasicAttack(BasicAttack):
+
+    def __init__(self):
+        super().__init__()
+
+    def on_after_cast(self, hero, target):
+        hero.add_battle_resource(25)
