@@ -1,0 +1,28 @@
+warrior
+1000/75
+am:0.7
+anger:0/100
+s1:passive, basic attack add 25 anger, receive basic attack or skill add 10 anger(multi times damage only trigger once)
+s2:active, consume 100 anger, make 200%*atk(150) damage to who make most add-up damage to him
+s3:passive, increase the amount of anger generation by the current lost percentage of hp(if current hp is 30%, add 70% additional anger generation)
+s4:passive, increase attack by 10% of current attack each time he attacks or cast skill(atk = atk * 1.1^stack)
+
+
+mega
+800/60
+am:0.9
+mana:100/100
+s1:passive, restore 10 mana after turn ends, restore 20 mana when enemy dies
+s2:active, consume 20 mana, make 250%atk(150) damage to random 4 enemies, each of these enemy has 25% chance to get stun for 2 turns
+s3:passive, consume 20 mana to increase 50% damage resistance when first time receive damage in a turn(each turn only once)
+s4:passive, consume all remains mana when die, make consumed mana*3%*atk(0-180) to all enemies
+
+
+ranger
+900/70
+am:0.8
+energy:50/100
+s1:passive, restore 50 energy when basic attack, lost energy 10 when receive attack or skill(only once for each skill or attack)
+s2:active, consume at least 50 energy, make (100 + 3*(consumed energy))% atk(175-280) to the first enemy
+s3:passive, cause 50% additional damage to lost controlled enemy
+s4:passive, when receive skill or attack, increase 20% dodge for this turn(will be cleared when turn ends)
